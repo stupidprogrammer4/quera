@@ -2,6 +2,10 @@
 
 using namespace std;
 
+// https://quera.org/problemset/314565
+// Binary search the weakness cap; tree DP checks each cap.
+// Time: O(n^2 log n), memory: O(n^2).
+
 const int maxn = 5e2+10, oo = 1e9;
 
 vector<int> child[maxn];
@@ -57,6 +61,13 @@ void dfs(int v, int K) {
     }
 }
 
+bool check(int K) {
+    dfs(1, K);
+    for (int a=0; a<=K; a++)
+        if (dp[1][a] != oo) return true;
+    return false;
+}
+
 int main() {
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     int T, p;
@@ -70,5 +81,13 @@ int main() {
             cin>>p>>c[i];
             child[p].push_back(i);
         }
+
+        int l=0, r=n-1;
+        while (l < r) {
+            int K = (l+r)/2;
+            if (check(K)) r = K;
+            else l = K+1;
+        }
+        cout<<l<<'\n';
     }
 }
